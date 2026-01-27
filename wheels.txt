@@ -5,6 +5,9 @@
 #
 # The most important wheel here is Nunchaku, which provides 4-bit quantization
 # support for massive speedups on Blackwell GPUs.
+# You may need to change the user/__manager/config.ini setting 
+# security_level=weak to get nunchaku to install, it relaxes the rule so the
+# installer works.
 #
 # Find the latest Nunchaku releases here:
 # https://github.com/nunchaku-ai/nunchaku/releases
