@@ -208,6 +208,7 @@ This is explained in more detail in env.example
 
 Edit `wheels.txt` with the new wheel URL from: https://github.com/nunchaku-ai/nunchaku/releases
 Nunchaku is in wheels.txt so it will be part of the build, comment this out if you don't want it.
+NOTE: You may need to change the config.ini setting security_level = weak to get nunchaku to install, it relaxes the rule so the installer works.
 
 If you have other python packages you specifically want to install, you can by specifying their wheel in wheels.txt. This is explained in further detail in the wheels.txt file.
 
