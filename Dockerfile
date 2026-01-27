@@ -7,7 +7,7 @@ ARG TORCH_WHEEL_URL=https://download.pytorch.org/whl/cu130/torch-2.10.0%2Bcu130-
 ARG TORCHVISION_WHEEL_URL=https://download.pytorch.org/whl/cu130/torchvision-0.25.0%2Bcu130-cp312-cp312-manylinux_2_28_x86_64.whl
 ARG TORCHAUDIO_WHEEL_URL=https://download.pytorch.org/whl/cu130/torchaudio-2.10.0%2Bcu130-cp312-cp312-manylinux_2_28_x86_64.whl
 ARG COMFYUI_BRANCH=master
-ARG SAGEATTENTION_VERSION=2.2.0
+ARG SAGEATTENTION_VERSION=v2
 
 FROM ${CUDA_BASE_IMAGE}
 
@@ -60,8 +60,20 @@ RUN echo "torch @ ${TORCH_WHEEL_URL}" > /app/constraints.txt && \
 
 # Install SageAttention for improved attention mechanism performance
 # Triton is required for SageAttention's CUDA kernels
-ARG SAGEATTENTION_VERSION
-RUN pip install triton "sageattention>=${SAGEATTENTION_VERSION}" -c /app/constraints.txt
+RUN if [ "$SAGEATTENTION_VERSION" != "none" ]; then \
+      pip install triton -c /app/constraints.txt && \
+      git clone https://github.com/thu-ml/SageAttention.git /app/tmp/sageattention && \
+      if [ "$SAGEATTENTION_VERSION" = "v3" ]; then \
+        cd /app/tmp/sageattention/sageattention3_blackwell; \
+      elif [ "$SAGEATTENTION_VERSION" = "v2" ]; then \
+        cd /app/tmp/sageattention; \
+      else \
+        echo "ERROR: SAGEATTENTION_VERSION must be v2, v3 or none" && exit 1; \
+      fi && \
+      pip install -c /app/constraints.txt . && \
+      cd /app && \
+      rm -rf /app/tmp/sageattention; \
+    fi
 
 # Install base ComfyUI requirements
 RUN pip install -r requirements.txt -c /app/constraints.txt

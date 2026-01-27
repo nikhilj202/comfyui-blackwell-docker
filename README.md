@@ -216,6 +216,23 @@ Then rebuild:
 docker-compose build --no-cache
 ```
 
+### Sage Attention
+
+SageAttention is installed from [source](https://github.com/thu-ml/SageAttention) - because the pypi wheel is from 2024 (old)... So your choices are either v2, v3 or none. Select this as a variable in .env.
+
+From the SageAttention github repo:
+>Currently, SageAttention3 works well for:
+>
+>1. Video generation models: CogVideoX-2B, HunyuanVideo, Mochi.
+>2. Almost all image generation models, including Flux and Stable-Diffusion3.5.
+>
+>Note: SageAttention3 does not guarantee lossless acceleration for all models. For other video generation models, we recommend selectively using SageAttention2++ in certain layers or timesteps.
+
+So you can chop and change, you just have to change the .env and then rebuild the docker image with:
+```bash
+docker-compose build --no-cache
+```
+
 ### Backup Your Setup
 
 Important directories to backup:
