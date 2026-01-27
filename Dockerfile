@@ -52,7 +52,9 @@ RUN git clone --branch ${COMFYUI_BRANCH} https://github.com/comfyanonymous/Comfy
 
 # Install PyTorch with CUDA 13.0 support
 # These specific wheels are critical for Blackwell GPU support
-RUN pip install \
+# Use cache mount for the heavy PyTorch download
+RUN --mount=type=cache,target=/root/.cache/pip \
+    PIP_NO_CACHE_DIR=0 pip install \
     "${TORCH_WHEEL_URL}" \
     "${TORCHVISION_WHEEL_URL}" \
     "${TORCHAUDIO_WHEEL_URL}"
