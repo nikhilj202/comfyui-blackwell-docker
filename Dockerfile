@@ -9,6 +9,7 @@ ARG TORCHAUDIO_WHEEL_URL=https://download.pytorch.org/whl/cu130/torchaudio-2.10.
 ARG COMFYUI_BRANCH=master
 ARG SAGEATTENTION_VERSION=v2
 ARG SAGEATTENTION_USE=1
+ARG TORCH_CUDA_ARCH_LIST=12.0
 
 FROM ${CUDA_BASE_IMAGE}
 # Re-declaring these ARGs so they are available inside this build stage
@@ -17,9 +18,11 @@ ARG TORCH_WHEEL_URL
 ARG TORCHVISION_WHEEL_URL
 ARG TORCHAUDIO_WHEEL_URL
 ARG COMFYUI_BRANCH
-# Pass these to the runtime so the CMD can see it later
+ARG TORCH_CUDA_ARCH_LIST
+# Pass these to the runtime
 ENV SAGEATTENTION_VERSION=${SAGEATTENTION_VERSION}
 ENV SAGEATTENTION_USE=${SAGEATTENTION_USE}
+ENV TORCH_CUDA_ARCH_LIST=${TORCH_CUDA_ARCH_LIST}
 # Setup environment for non-interactive installs
 ENV DEBIAN_FRONTEND=noninteractive
 # Allow pip to install in system Python (we're in a container, it's fine)
@@ -77,7 +80,7 @@ RUN if [ "$SAGEATTENTION_VERSION" != "none" ]; then \
       else \
         echo "ERROR: SAGEATTENTION_VERSION must be v2, v3 or none" && exit 1; \
       fi && \
-      pip install -c /app/constraints.txt . && \
+      pip install --no-build-isolation -c /app/constraints.txt . && \
       cd /app && \
       rm -rf /app/tmp/sageattention; \
     fi
